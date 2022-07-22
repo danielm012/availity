@@ -1,0 +1,71 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 10vmin;
+  width: fit-content;
+  pointer-events: none;
+  margin-bottom: 10%;
+}
+
+
+.App-header {
+  background-color: #334261;
+  min-height: 15vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+#logo
+{
+  max-width: 230px;
+  max-height: 100px;
+}
+
+.signUpForm
+{
+ 
+  background-color: #334261;
+  min-height: 10vh;
+  display: -webkit-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(3px + 2vmin);
+  color: white;
+}
+
+.signUpForm input
+{
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+form{
+  max-width: 250px;
+  background-position: 62%;
+  background-image: url("");
+}
+form label
+{
+  display: block;
+  margin-bottom: 10%;
+}
+
+form p 
+{
+  font-family: cursive;
+  font-size: small;
+  text-align: justify;
+  margin-bottom: 10%;
+}
