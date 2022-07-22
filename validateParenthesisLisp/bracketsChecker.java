@@ -21,58 +21,61 @@ public class bracketsChecker {
 				Arrays.asList("C:/Users/danie/OneDrive/Documents/interview/Availity/validateParenthesisLisp/parenthesisComplete.lisp",
 						       "C:/Users/danie/OneDrive/Documents/interview/Availity/validateParenthesisLisp/parenthesisIncomplete.lisp"));
 		
+		Scanner scanner = null;
 		for(String file: files)
+		{
+		    Boolean fileValid = true;
 		    try
 		    {
-		    	// variables for file streaming and validity
-			    Boolean fileValid = true;
-			    Scanner scanner = new Scanner(new File(file));	
-			    
-			    scanner.useDelimiter("");
-			    
-			    System.out.println(file);
-			
-			    // processing file to check for the correct brackets
-			    while(scanner.hasNext() && fileValid)
-			    {
-			    	String bracket = scanner.next();
-				
-			    	if(openBrackets.contains(bracket))
-			    	{
-			    		System.out.print(bracket + " ");
-			    		
-			    		stack.add(bracket);
-			    	}
-			    	else if(closeBrackets.contains(bracket))
-			    	{
-			    		System.out.print(bracket + " ");
-			    		
-			    		if(stack.contains(openBrackets.get(closeBrackets.indexOf(bracket)))) 
-			    		{
-			    			stack.pop();
-			    		}
-			    		else
-			    		{
-			    			fileValid = false;
-			    		}		
-			    	}
-			    }
-			    
-			    System.out.println("");
-			    
-			    // print results of the file
-			    if(stack.empty())
-			    	System.out.println("Lisp File Valid" + "\n");
-			    else
-			    	System.out.println("Lisp File is not Valid" + "\n");
-			
-			    // close file for security and avoidance of error
-			    scanner.close();
+		    	// Reading file for processing
+			    scanner = new Scanner(new File(file));				    
+			    scanner.useDelimiter("");		    
 		    }
 			catch(Exception error)
 			{
 				System.out.println(error);
 			}
+			System.out.println(file);
+			
+			// processing file to check for the correct brackets
+			while(scanner.hasNext() && fileValid)
+			{
+				String bracket = scanner.next();
+			
+				if(openBrackets.contains(bracket))
+				{
+					System.out.print(bracket + " ");
+					
+					stack.add(bracket);
+				}
+				else if(closeBrackets.contains(bracket))
+				{
+					System.out.print(bracket + " ");
+					
+					if(stack.contains(openBrackets.get(closeBrackets.indexOf(bracket)))) 
+					{
+						stack.pop();
+					}
+					else
+					{
+						fileValid = false;
+					}		
+				}
+			}
+			
+			System.out.println("");
+			
+			// print results of the file
+			if(stack.empty())
+				System.out.println("Lisp File Valid" + "\n");
+			else
+				System.out.println("Lisp File is not Valid" + "\n");
+		
+			// close file for security and avoidance of error
+			scanner.close();
+
+		}
+			
 	
 	}
 
