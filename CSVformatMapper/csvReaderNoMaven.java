@@ -221,9 +221,6 @@ public class csvReaderNoMaven {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		System.out.print(insuranceList.get("Cigna").get(0).First);
-		System.out.print(insuranceList.get("Cigna").get(0).Id);
 	}
 
 }
