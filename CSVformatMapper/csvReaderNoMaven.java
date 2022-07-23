@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -17,11 +19,6 @@ public class csvReaderNoMaven {
 		private String Last;
 		private int Version;
 		private String Insurance;
-		
-		private Patient()
-		{
-			// empty constructor to not allow empty classes
-		}
 		
 		public Patient(int id, String first, String last, int version, String insurance)
 		{
@@ -55,6 +52,20 @@ public class csvReaderNoMaven {
 		}
 		
 		
+		public static class SortByName implements Comparator<Patient>
+		{
+			@Override
+			public int compare(csvReaderNoMaven.Patient o1, csvReaderNoMaven.Patient o2) {
+				// TODO Auto-generated method stub
+				int comparison = o1.First.compareTo(o2.First);
+				if(comparison != 0)
+					return comparison;
+				else
+					return o1.Last.compareTo(o2.Last);
+			}
+			
+		}
+		
 	}
 
 	/* Code which should handle most static function from below
@@ -84,28 +95,24 @@ public class csvReaderNoMaven {
 	*/
 	public static LinkedList<Patient> createPatientList(Scanner patientsCSV, int sizeEachRecord)
 	{
-		int count = 0;
 		LinkedList<Patient> patients = new LinkedList<>();
-		String[] data = new String[sizeEachRecord];
 
-		for(int i = 1; i < sizeEachRecord; i++)
-		{
-			patientsCSV.next();
-		}
-		
+		patientsCSV.next();
+			
 		while(patientsCSV.hasNext())
 		{
 			String[] currentPatient = patientsCSV.next().split(",");
 			System.out.println(Arrays.toString(currentPatient));
 			
 			int id = !currentPatient[0].equals("") ? (Integer.parseInt(currentPatient[0])) : 0;
-			int version = !currentPatient[0].equals("") ? (Integer.parseInt(currentPatient[0])) : 0;
+			int version = !currentPatient[3].equals("") ? (Integer.parseInt(currentPatient[3])) : 0;
+			
 			
 			patients.add(new Patient(id,
 					currentPatient[1],
 					currentPatient[2],
 					version,
-					currentPatient[4]));
+					currentPatient[4].replaceAll("\r", "")));
 		}
 		
 		return patients;
@@ -125,15 +132,14 @@ public class csvReaderNoMaven {
 			}
 			insuranceList.get(insurance).add(currentPatient);
 		}
+		
 		return insuranceList;
 	}
 	
 	public static void createCsvFiles(Map<String, LinkedList<Patient>> patientsMap) throws IOException
 	{
 		for(String key : patientsMap.keySet())
-		{
-			key = key.replaceAll("\r", "");
-			
+		{		
 			// opens or create the file in the hard drive....
 			File file = null;
 			try
@@ -145,7 +151,8 @@ public class csvReaderNoMaven {
 			    } 
 				else 
 				{
-			        System.out.println("File already exists.");
+			        file.delete();
+			        file.createNewFile();
 				}
 			}
 			catch(Exception err)
@@ -153,13 +160,31 @@ public class csvReaderNoMaven {
 				System.err.println(err);
 			}
 			
+			Collections.sort(patientsMap.get(key), new Patient.SortByName());
+			
 			// write the information to a CSV file
+			Patient previous = null;
+			
 			FileWriter writer = new FileWriter(file);
 			writer.write("Id,First,Last,Version,Insurance\n");
 			for(Patient patient : patientsMap.get(key))
 			{
-				writer.write(patient.Id + "," + patient.First + "," + patient.Last + "," + patient.Version + "," + patient.Insurance + "\n");
+				
+			    if(previous == null || patient.First.equals(previous.First) && 
+						patient.Last.equals(previous.Last) &&
+								patient.Version > previous.Version)
+				{
+					previous = patient;
+				}
+				else if( !patient.First.equals(previous.First) ||
+						!patient.Last.equals(previous.Last))
+				{
+					writer.write(previous.Id + "," + previous.First + "," + previous.Last + "," + previous.Version + "," + previous.Insurance + "\n");
+					previous = patient;
+				}
 			}
+			// guaranteed to write the last record on the file.
+			writer.write(previous.Id + "," + previous.First + "," + previous.Last + "," + previous.Version + "," + previous.Insurance + "\n");
 			
 			writer.close();
 		}
